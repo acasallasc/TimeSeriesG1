@@ -1,0 +1,35 @@
+--- 
+title: "Distribución de cartera por producto"
+author: "Angie Cantillo, Carlos Casallas Ciprian, Ginna Quintero Afanador"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: bookdown::gitbook
+documentclass: book
+#bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+description: "This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook."
+---
+
+# Base de datos
+
+Para este curso decidimos usar una base de datos abierta del gobierno, llamada "Distribución de cartera por producto". La informacion se encuentra en el siguiente link: 
+
+link: https://www.datos.gov.co/Hacienda-y-Cr-dito-P-blico/Distribuci-n-de-cartera-por-producto/rvii-eis8/about_data
+
+# información y la justificación
+
+Pronosticar datos de distribución de cartera es importante para planificar estrategias financieras, gestionar riesgos y tomar decisiones informadas. Con una base de datos tan detallada, se puede emplear diversas técnicas de pronóstico, como modelos estadísticos y series temporales. 
+
+**Permite identificar tendencias futuras de la demanda:** Al pronosticar la colocación de cada tipo de producto, los bancos pueden anticipar cambios en la demanda y tomar decisiones proactivas para ajustar sus estrategias de comercialización.
+
+**Reduce el riesgo:** Al pronosticar cómo evolucionará la distribución de la cartera en el tiempo, las instituciones financieras pueden anticiparse a posibles problemas de morosidad o incumplimiento. Esto les permite implementar medidas preventivas o correctivas para mitigar riesgos y proteger la salud financiera.
+
+**Optimización de la rentabilidad de la cartera:** Con base en el análisis de series de tiempo, los bancos pueden optimizar la composición de su cartera de productos, concentrando recursos en aquellos con mayor potencial de crecimiento y rentabilidad. 
+
+**Mejora de la toma de decisiones estratégicas:** Al comprender el desempeño histórico, las tendencias del mercado y los riesgos asociados a diferentes productos, los bancos pueden tomar decisiones más informadas que conduzcan a un mejor desempeño financiero y una mayor competitividad.
+
+**Planeación financiera:** El pronóstico permite a las instituciones financieras planificar adecuadamente sus recursos y estrategias. Conociendo la distribución futura de la cartera, pueden asignar capital de manera más eficiente, ajustar sus políticas de crédito y tomar decisiones informadas sobre la gestión de riesgos.
+
+Por lo tanto,  el pronóstico de la distribución de cartera proporciona a las instituciones financieras una visión anticipada y un contexto mas analítico del estado de su cartera crediticia, lo que les permite tomar decisiones más informadas y estratégicas para gestionar riesgos, maximizar la rentabilidad y cumplir con las regulaciones. Ademas de beneficiar a los clientes al garantizar una gestión más sólida y responsable de sus cuentas.
