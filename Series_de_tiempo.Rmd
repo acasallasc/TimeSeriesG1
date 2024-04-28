@@ -18,7 +18,7 @@ Para este curso decidimos usar una base de datos abierta del gobierno, llamada "
 
 link: https://www.datos.gov.co/Hacienda-y-Cr-dito-P-blico/Distribuci-n-de-cartera-por-producto/rvii-eis8/about_data
 
-# información y la justificación
+# Información y la justificación
 
 Pronosticar datos de distribución de cartera es importante para planificar estrategias financieras, gestionar riesgos y tomar decisiones informadas. Con una base de datos tan detallada, se puede emplear diversas técnicas de pronóstico, como modelos estadísticos y series temporales. 
 
