@@ -18,7 +18,34 @@ Para este curso decidimos usar una base de datos abierta del gobierno, llamada "
 
 link: https://www.datos.gov.co/Hacienda-y-Cr-dito-P-blico/Distribuci-n-de-cartera-por-producto/rvii-eis8/about_data
 
-# Información y la justificación
+Resumen de las columnas:
+
+**TIPO_ENTIDAD:** Tipo de entidad financiera.
+
+**CODIGO_ENTIDAD:** Código único de la entidad.
+
+**NOMBREENTIDAD**: Nombre de la entidad financiera.
+
+**FECHA_CORTE: ** Fecha en la que se hizo el corte de los datos.
+
+**UNICAP:** Valor numérico relacionado con la entidad.
+
+**DESCRIP_UC:** Descripción de UNICAP.
+
+**RENGLON:** Valor numérico relacionado con la entidad.
+
+**DESC_RENGLON:** Descripción de RENGLON.
+
+**Saldo_cartera_fecha_corte:** Saldo de la cartera a la fecha de corte del reporte.
+
+**Vigente:** Valor numérico relacionado con la cartera de préstamos.
+
+**Vencida_1_2_Meses:** Valor numérico relacionado con la cartera de préstamos vencida entre 1 y 2 meses.
+
+**Vencida_2_3_Meses:** Valor numérico relacionado con la cartera de préstamos vencida entre 2 y 3 meses.
+Y así sucesivamente hasta la variable 34, con varias otras columnas relacionadas con la cartera de préstamos y la calificación de riesgo de los clientes.
+
+# Información y justificación
 
 Pronosticar datos de distribución de cartera es importante para planificar estrategias financieras, gestionar riesgos y tomar decisiones informadas. Con una base de datos tan detallada, se puede emplear diversas técnicas de pronóstico, como modelos estadísticos y series temporales. 
 
@@ -33,3 +60,213 @@ Pronosticar datos de distribución de cartera es importante para planificar estr
 **Planeación financiera:** El pronóstico permite a las instituciones financieras planificar adecuadamente sus recursos y estrategias. Conociendo la distribución futura de la cartera, pueden asignar capital de manera más eficiente, ajustar sus políticas de crédito y tomar decisiones informadas sobre la gestión de riesgos.
 
 Por lo tanto,  el pronóstico de la distribución de cartera proporciona a las instituciones financieras una visión anticipada y un contexto mas analítico del estado de su cartera crediticia, lo que les permite tomar decisiones más informadas y estratégicas para gestionar riesgos, maximizar la rentabilidad y cumplir con las regulaciones. Ademas de beneficiar a los clientes al garantizar una gestión más sólida y responsable de sus cuentas.
+
+
+# Instalación de paquetes y carga de datos
+
+
+* Instalación y carga las bibliotecas necesarias
+```{r cars, message=FALSE, results='hide'}
+# Establecer un repositorio CRAN
+options(repos = 'https://cran.r-project.org')
+
+#install.packages("readr")
+#install.packages("dplyr")
+#install.packages("ggplot2")
+#install.packages("stringr")
+#install.packages("ggplot")
+#install.packages("fpp2")
+#install.packages("corrplot")
+
+library(stringr)
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(stats)
+library(zoo)
+library(tseries)
+library(tidyverse)
+library(corrplot)
+library(fpp2)
+#library(ggplot)
+```
+
+
+* Cargar los datos, para ello descargamos los datos en formato .csv
+
+
+```{r 1, message=FALSE}
+df <- read_csv("D:/CC/Personal/R/TimeSeriesG1/Base.csv")
+```
+
+Para un mejor y facil analisis de la información, decidimos renombrar las variables.
+```{r 1a}
+# Cambiar el nombre de las variables
+nombres_nuevos <- c("TIPO_ENTIDAD","CODIGO_ENTIDAD","NOMBREENTIDAD","FECHA_CORTE","UNICAP", "DESCRIP_UC",
+                    "RENGLON","DESC_RENGLON","Saldo_cartera_fecha_corte","Vigente","Vencida_1_2_Meses",
+                    "Vencida_2_3_Meses","Vencida_1_3_Meses","Vencida_3_4_Meses","Vencida_mas_4_Meses",
+                    "Vencida_3_6_Meses","Vencida_mas_6_meses","Vencida_1_4_meses","Vencida_4_6_meses",
+                    "Vencida_6_12_meses","Vencida_12_18_meses","Vencida_mas_12_meses","Vencida_mas_18_meses"
+                    ,"Num_clientes_mora_30_dias","Calificacion_Riesgo_A_Num_clientes",
+                    "Calificacion_Riesgo_A_Saldo","Calificacion_Riesgo_B_Num_clientes",
+                    "Calificacion_Riesgo_B_Saldo","Calificacion_Riesgo_C_Num_clientes",
+                    "Calificacion_Riesgo_C_Saldo","Calificacion_Riesgo_D_Num_clientes",
+                    "Calificacion_Riesgo_D_Saldo","Calificacion_Riesgo_E_Num_clientes",
+                    "Calificacion_Riesgo_E_Saldo")
+
+# Cambiar los nombres de las columnas en el dataframe df
+names(df) <- nombres_nuevos
+
+```
+# Analisis exploratorio de datos
+
+* Exploración de datos
+```{r 1b,message=FALSE}
+str(df)
+head(df)
+summary(df)
+dim(df)
+```
+
+* Grafica de la distribución de la variable categórica TIPO_ENTIDAD.
+
+La mayoría de las entidades son del tipo 1, seguido de las entidades tipo 4. 
+
+```{r 1c,message=FALSE}
+
+ggplot(df, aes(x = factor(TIPO_ENTIDAD))) +
+  geom_bar(fill = "skyblue", color = "black") +
+  labs(x = "Tipo de Entidad", y = "Frecuencia", title = "Distribución de Tipo de Entidad")
+
+```
+Realizamos primero una Revisión de datos faltantes, para verificar que nuestra base de datos este completa.
+
+```{r 1d, message=FALSE}
+# Utiliza la función colSums() junto con is.na() para calcular el número de NA por columna
+num_missing <- colSums(is.na(df))
+
+# Muestra el número de datos faltantes por variable
+print(num_missing)
+```
+
+```{r 1e, message=FALSE}
+
+#Correlación entre variables numéricas
+correlation_matrix <- cor(df[, c("TIPO_ENTIDAD", "Saldo_cartera_fecha_corte")])
+print(correlation_matrix)
+
+
+# Visualiza la matriz de correlación
+corrplot(correlation_matrix, method = "color", col = colorRampPalette(c("blue", "white", "green"))(50))
+
+
+```
+
+
+Ahora ya convertiremos fecha de corte a una variable tipo fecha.
+
+```{r 2}
+df$FECHA_CORTE <- as.Date(df$FECHA_CORTE, format = "%d/%m/%Y")
+```
+
+# Variables de tiempo
+
+* Selección de variable y ventana de tiempo
+```{r 3}
+variable <- "Vigente"  
+ventana_tiempo <- 12  # Tamaño de la ventana de promedio móvil 12 meses
+```
+* Cálculo de promedio móvil
+```{r 5}
+df$Promedio_Movil <- zoo::rollmean(df[[variable]], k = ventana_tiempo, fill = NA)
+```
+
+* Visualización
+```{r 6, message=FALSE}
+ggplot(df, aes(x = FECHA_CORTE)) +
+  geom_line(aes_string(y = variable, color = "'Original'")) +
+  geom_line(aes(y = Promedio_Movil, color = "'Promedio Móvil'")) +
+  labs(x = "Fecha", y = "Valor", title = paste("Promedio Móvil de", variable)) +
+  scale_color_manual(values = c("'Original'" = "blue", "'Promedio Móvil'" = "red")) +
+  theme_minimal()
+```
+
+* Análisis de rezagos
+
+```{r 7, message=FALSE}
+#  desplazar la serie temporal original en 6 meses
+datos <- df %>% mutate(rezago_1_mes = lag(Vigente, 1))
+```
+
+```{r 8, message=FALSE}
+ggplot(datos, aes(x = FECHA_CORTE)) +
+  geom_line(aes(y = Vigente), color = "blue") +
+  geom_line(aes(y = rezago_1_mes), color = "green") +
+  labs(x = "Fecha de Corte", y = "Vigente", title = "Serie Temporal de Vigente con Rezago de 1 Mes")
+```
+
+* Aproximación en estacionalidad
+
+```{r 9, message=FALSE}
+# queremos calcular la diferencia entre el valor actual y el valor del mismo mes del año anterior
+datos <- datos %>% mutate(estacionalidad = Vigente - lag(Vigente, 12))
+```
+
+* Grafica de estacionalidad
+```{r 10, message=FALSE}
+ggplot(datos, aes(x = FECHA_CORTE, y = estacionalidad,color = "Estacionalidad")) +
+  geom_line() +
+  labs(x = "Fecha de Corte", y = "Estacionalidad", title = "Estacionalidad de la Variable Vigente")
+
+```
+
+
+# Descomposición de la serie de tiempo
+
+Para realizar la descomposición de la serie de tiempo sobre la variable Vigente, la cual representa el Saldo Capital Vigente a cada fecha sobre el que se encuentra activa la cartera, se agrupan los valores por cada entidad para cada periodo, con el fin de hacer un análisis general.
+```{r, message=FALSE}
+data_agrupada <- aggregate(Vigente ~ FECHA_CORTE, df, sum)
+datosVig <- ts(data_agrupada$Vigente, frequency = 12, start = c(2015,1))
+```
+
+```{r, message=FALSE}
+fit <- decompose(datosVig, type='additive')
+
+autoplot(fit)+
+  labs(title = "Descomposición de la serie de tiempo",                   
+       x = "Tiempo",
+       y = "Valor",
+       colour = "Gears")+
+    theme_bw()
+
+```
+
+## Tendencia
+La tendencia general del capital vigente es ascendente, lo que indica que la cantidad de capital en mora ha aumentado con el tiempo. La tendencia no parece ser lineal, sino que presenta un crecimiento más rápido en los últimos años.
+
+## Estacionalidad
+Se observa una clara estacionalidad con un pico en el segundo semestre de cada año.Es importante considerar esta estacionalidad al realizar pronósticos o tomar decisiones relacionadas con la gestión de la morosidad.
+
+## Residuos
+El residuo representa la variabilidad aleatoria en la serie de tiempo que no se explica por la tendencia ni la estacionalidad. El residuo no parece tener un patrón definido, es decir es aleatorio, lo que indicaría posibles eventos atípicos o factores externos no considerados en la descomposición.
+
+
+# Estacionariedad
+De acuerdo con el test Dicker-Fuller podemos identificar si la serie agrupada es estacionaria o no estacionaria.
+```{r}
+adf.test(datosVig)
+```
+Recordemos que si el valor p es menor que 0.05 es estacionaria, por lo que para esta serie de tiempo que estamos estudiando se puede concluir que NO ES ESTACIONARIA.
+
+# Diferenciación
+Teniendo en cuenta el resultado del test anterior,y con un nivel de significancia del 0.05, identificamos el número de veces que debemos diferenciar para tener la estacionariedad.
+
+```{r}
+serie_diff1 <- diff(datosVig, lag = 11)
+plot(serie_diff1)
+
+# Test de Dickey-Fuller para la serie diferenciada
+adf.test(serie_diff1)
+```
+
+Por medio de prueba y error, se identificó que el número de diferenciaciones necesarias para que la serie sea estacionaria es igual a 11, lo que indica que la serie original presenta una fuerte tendencia no estacionaria, permitiendo concluir que la serie original contenía información de diferentes escalas o patrones de crecimiento que no eran evidentes a simple vista.

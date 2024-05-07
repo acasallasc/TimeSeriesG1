@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>4 Analisis exploratorio de datos | Distribución de cartera por producto</title>
+  <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="4 Analisis exploratorio de datos | Distribución de cartera por producto" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="4 Analisis exploratorio de datos | Distribución de cartera por producto" />
+  
+  <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
+  
+
+<meta name="author" content="Angie Cantillo, Carlos Casallas Ciprian, Ginna Quintero Afanador" />
+
+
+<meta name="date" content="2024-05-06" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="instalación-de-paquetes-y-carga-de-datos.html"/>
+<link rel="next" href="variables-de-tiempo.html"/>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+  
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li class="chapter" data-level="1" data-path="base-de-datos.html"><a href="base-de-datos.html"><i class="fa fa-check"></i><b>1</b> Base de datos</a></li>
+<li class="chapter" data-level="2" data-path="información-y-justificación.html"><a href="información-y-justificación.html"><i class="fa fa-check"></i><b>2</b> Información y justificación</a></li>
+<li class="chapter" data-level="3" data-path="instalación-de-paquetes-y-carga-de-datos.html"><a href="instalación-de-paquetes-y-carga-de-datos.html"><i class="fa fa-check"></i><b>3</b> Instalación de paquetes y carga de datos</a></li>
+<li class="chapter" data-level="4" data-path="analisis-exploratorio-de-datos.html"><a href="analisis-exploratorio-de-datos.html"><i class="fa fa-check"></i><b>4</b> Analisis exploratorio de datos</a></li>
+<li class="chapter" data-level="5" data-path="variables-de-tiempo.html"><a href="variables-de-tiempo.html"><i class="fa fa-check"></i><b>5</b> Variables de tiempo</a></li>
+<li class="chapter" data-level="6" data-path="descomposición-de-la-serie-de-tiempo.html"><a href="descomposición-de-la-serie-de-tiempo.html"><i class="fa fa-check"></i><b>6</b> Descomposición de la serie de tiempo</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="descomposición-de-la-serie-de-tiempo.html"><a href="descomposición-de-la-serie-de-tiempo.html#tendencia"><i class="fa fa-check"></i><b>6.1</b> Tendencia</a></li>
+<li class="chapter" data-level="6.2" data-path="descomposición-de-la-serie-de-tiempo.html"><a href="descomposición-de-la-serie-de-tiempo.html#estacionalidad"><i class="fa fa-check"></i><b>6.2</b> Estacionalidad</a></li>
+<li class="chapter" data-level="6.3" data-path="descomposición-de-la-serie-de-tiempo.html"><a href="descomposición-de-la-serie-de-tiempo.html#residuos"><i class="fa fa-check"></i><b>6.3</b> Residuos</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="estacionariedad.html"><a href="estacionariedad.html"><i class="fa fa-check"></i><b>7</b> Estacionariedad</a></li>
+<li class="chapter" data-level="8" data-path="diferenciación.html"><a href="diferenciación.html"><i class="fa fa-check"></i><b>8</b> Diferenciación</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Distribución de cartera por producto</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="analisis-exploratorio-de-datos" class="section level1 hasAnchor" number="4">
+<h1><span class="header-section-number">4</span> Analisis exploratorio de datos<a href="analisis-exploratorio-de-datos.html#analisis-exploratorio-de-datos" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<ul>
+<li>Exploración de datos</li>
+</ul>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="analisis-exploratorio-de-datos.html#cb4-1" tabindex="-1"></a><span class="fu">str</span>(df)</span></code></pre></div>
+<pre><code>## spc_tbl_ [92,568 × 34] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
+##  $ TIPO_ENTIDAD                      : num [1:92568] 1 1 1 1 1 1 1 1 1 1 ...
+##  $ CODIGO_ENTIDAD                    : num [1:92568] 58 7 23 12 54 30 2 39 1 49 ...
+##  $ NOMBREENTIDAD                     : chr [1:92568] &quot;Coopcentral&quot; &quot;Bancolombia&quot; &quot;Banco De Occidente&quot; &quot;Banco Gnb Sudameris&quot; ...
+##  $ FECHA_CORTE                       : chr [1:92568] &quot;30/09/2023&quot; &quot;30/09/2023&quot; &quot;31/01/2015&quot; &quot;30/09/2023&quot; ...
+##  $ UNICAP                            : num [1:92568] 3 22 1 19 1 1 5 6 22 1 ...
+##  $ DESCRIP_UC                        : chr [1:92568] &quot;LIBRE INVERSIÓN&quot; &quot;CARTERA COMERCIAL MICROEMPRESA&quot; &quot;CRÉDITO ROTATIVO&quot; &quot;CARTERA COMERCIAL CORPORATIVO&quot; ...
+##  $ RENGLON                           : num [1:92568] 5 5 5 5 5 5 5 5 5 5 ...
+##  $ DESC_RENGLON                      : chr [1:92568] &quot;LIBRE INVERSIÓN&quot; &quot;MICROEMPRESA&quot; &quot;CRÉDITO ROTATIVO TOTAL&quot; &quot;CORPORATIVO&quot; ...
+##  $ Saldo_cartera_fecha_corte         : num [1:92568] 3.76e+10 2.98e+12 1.08e+11 4.18e+12 2.44e+11 ...
+##  $ Vigente                           : num [1:92568] 3.34e+10 2.59e+12 1.04e+11 4.15e+12 2.27e+11 ...
+##  $ Vencida_1_2_Meses                 : num [1:92568] 1.29e+09 0.00 1.36e+09 0.00 6.33e+09 ...
+##  $ Vencida_2_3_Meses                 : num [1:92568] 3.19e+08 0.00 8.46e+08 0.00 2.69e+09 ...
+##  $ Vencida_1_3_Meses                 : num [1:92568] 0.00 1.08e+11 0.00 0.00 0.00 ...
+##  $ Vencida_3_4_Meses                 : num [1:92568] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ Vencida_mas_4_Meses               : num [1:92568] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ Vencida_3_6_Meses                 : num [1:92568] 4.76e+08 9.99e+10 1.24e+09 6.25e+08 3.89e+09 ...
+##  $ Vencida_mas_6_meses               : num [1:92568] 2.13e+09 0.00 6.64e+08 0.00 3.59e+09 ...
+##  $ Vencida_1_4_meses                 : num [1:92568] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ Vencida_4_6_meses                 : num [1:92568] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ Vencida_6_12_meses                : num [1:92568] 0.00 1.12e+11 0.00 2.14e+09 0.00 ...
+##  $ Vencida_12_18_meses               : num [1:92568] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ Vencida_mas_12_meses              : num [1:92568] 0.00 7.11e+10 0.00 2.65e+10 0.00 ...
+##  $ Vencida_mas_18_meses              : num [1:92568] 0 0 0 0 0 0 0 0 0 0 ...
+##  $ Num_clientes_mora_30_dias         : num [1:92568] 389 22091 425 5 2295 ...
+##  $ Calificacion_Riesgo_A_Num_clientes: num [1:92568] 1257 127937 9723 139 32098 ...
+##  $ Calificacion_Riesgo_A_Saldo       : num [1:92568] 3.19e+10 2.43e+12 1.00e+11 4.04e+12 2.25e+11 ...
+##  $ Calificacion_Riesgo_B_Num_clientes: num [1:92568] 66 7317 324 7 951 ...
+##  $ Calificacion_Riesgo_B_Saldo       : num [1:92568] 1.75e+09 1.27e+11 2.92e+09 3.53e+10 5.97e+09 ...
+##  $ Calificacion_Riesgo_C_Num_clientes: num [1:92568] 44 4080 207 12 848 ...
+##  $ Calificacion_Riesgo_C_Saldo       : num [1:92568] 7.81e+08 6.89e+10 1.94e+09 4.77e+10 5.03e+09 ...
+##  $ Calificacion_Riesgo_D_Num_clientes: num [1:92568] 101 12891 165 3 521 ...
+##  $ Calificacion_Riesgo_D_Saldo       : num [1:92568] 8.59e+08 2.09e+11 1.62e+09 1.14e+10 3.61e+09 ...
+##  $ Calificacion_Riesgo_E_Num_clientes: num [1:92568] 232 2138 144 4 520 ...
+##  $ Calificacion_Riesgo_E_Saldo       : num [1:92568] 2.31e+09 1.42e+11 1.54e+09 4.79e+10 4.30e+09 ...
+##  - attr(*, &quot;spec&quot;)=
+##   .. cols(
+##   ..   TIPO_ENTIDAD = col_double(),
+##   ..   CODIGO_ENTIDAD = col_double(),
+##   ..   NOMBREENTIDAD = col_character(),
+##   ..   FECHA_CORTE = col_character(),
+##   ..   UNICAP = col_double(),
+##   ..   DESCRIP_UC = col_character(),
+##   ..   RENGLON = col_double(),
+##   ..   DESC_RENGLON = col_character(),
+##   ..   `(1) Saldo de la cartera a la fecha de corte del reporte` = col_double(),
+##   ..   `(2) Vigente` = col_double(),
+##   ..   `(3) Vencida 1-2 Meses` = col_double(),
+##   ..   `(4) Vencida 2-3 Meses` = col_double(),
+##   ..   `(5) Vencida 1-3 Meses` = col_double(),
+##   ..   `(6) Vencida 3-4 Meses` = col_double(),
+##   ..   `(7) Vencida &gt; de 4 Meses` = col_double(),
+##   ..   `(8) Vencida 3-6 Meses` = col_double(),
+##   ..   `(9) Vencida +6 meses` = col_double(),
+##   ..   `(10) Vencida 1-4 meses` = col_double(),
+##   ..   `(11) Vencida 4-6 meses` = col_double(),
+##   ..   `(12) Vencida 6-12 meses` = col_double(),
+##   ..   `(13) Vencida 12-18 meses` = col_double(),
+##   ..   `(14) Vencida &gt; 12 meses` = col_double(),
+##   ..   `(15) Vencida &gt; 18 meses` = col_double(),
+##   ..   `(16) Número de clientes Mora &gt; 30 días` = col_double(),
+##   ..   `(17) Calificación de Riesgo A / Número de Clientes` = col_double(),
+##   ..   `(18) Calificación de Riesgo A / Saldo` = col_double(),
+##   ..   `(19) Calificación de Riesgo B / Número de Clientes` = col_double(),
+##   ..   `(20) Calificación de Riesgo B / Saldo` = col_double(),
+##   ..   `(21) Calificación de Riesgo C / Número de Clientes` = col_double(),
+##   ..   `(22) Calificación de Riesgo C / Saldo` = col_double(),
+##   ..   `(23) Calificación de Riesgo D / Número de Clientes` = col_double(),
+##   ..   `(24) Calificación de Riesgo D / Saldo` = col_double(),
+##   ..   `(25) Calificación de Riesgo E / Número de Clientes` = col_double(),
+##   ..   `(26) Calificación de Riesgo E / Saldo` = col_double()
+##   .. )
+##  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="analisis-exploratorio-de-datos.html#cb6-1" tabindex="-1"></a><span class="fu">head</span>(df)</span></code></pre></div>
+<pre><code>## # A tibble: 6 × 34
+##   TIPO_ENTIDAD CODIGO_ENTIDAD NOMBREENTIDAD       FECHA_CORTE UNICAP DESCRIP_UC 
+##          &lt;dbl&gt;          &lt;dbl&gt; &lt;chr&gt;               &lt;chr&gt;        &lt;dbl&gt; &lt;chr&gt;      
+## 1            1             58 Coopcentral         30/09/2023       3 LIBRE INVE…
+## 2            1              7 Bancolombia         30/09/2023      22 CARTERA CO…
+## 3            1             23 Banco De Occidente  31/01/2015       1 CRÉDITO RO…
+## 4            1             12 Banco Gnb Sudameris 30/09/2023      19 CARTERA CO…
+## 5            1             54 Bancoomeva          31/01/2015       1 CRÉDITO RO…
+## 6            1             30 Banco Caja Social   31/01/2015       1 CRÉDITO RO…
+## # ℹ 28 more variables: RENGLON &lt;dbl&gt;, DESC_RENGLON &lt;chr&gt;,
+## #   Saldo_cartera_fecha_corte &lt;dbl&gt;, Vigente &lt;dbl&gt;, Vencida_1_2_Meses &lt;dbl&gt;,
+## #   Vencida_2_3_Meses &lt;dbl&gt;, Vencida_1_3_Meses &lt;dbl&gt;, Vencida_3_4_Meses &lt;dbl&gt;,
+## #   Vencida_mas_4_Meses &lt;dbl&gt;, Vencida_3_6_Meses &lt;dbl&gt;,
+## #   Vencida_mas_6_meses &lt;dbl&gt;, Vencida_1_4_meses &lt;dbl&gt;,
+## #   Vencida_4_6_meses &lt;dbl&gt;, Vencida_6_12_meses &lt;dbl&gt;,
+## #   Vencida_12_18_meses &lt;dbl&gt;, Vencida_mas_12_meses &lt;dbl&gt;, …</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="analisis-exploratorio-de-datos.html#cb8-1" tabindex="-1"></a><span class="fu">summary</span>(df)</span></code></pre></div>
+<pre><code>##   TIPO_ENTIDAD    CODIGO_ENTIDAD   NOMBREENTIDAD      FECHA_CORTE       
+##  Min.   : 1.000   Min.   :  1.00   Length:92568       Length:92568      
+##  1st Qu.: 1.000   1st Qu.:  7.00   Class :character   Class :character  
+##  Median : 1.000   Median : 30.00   Mode  :character   Mode  :character  
+##  Mean   : 5.366   Mean   : 36.64                                        
+##  3rd Qu.: 4.000   3rd Qu.: 54.00                                        
+##  Max.   :32.000   Max.   :125.00                                        
+##      UNICAP       DESCRIP_UC           RENGLON       DESC_RENGLON      
+##  Min.   : 1.00   Length:92568       Min.   : 5.000   Length:92568      
+##  1st Qu.: 4.00   Class :character   1st Qu.: 5.000   Class :character  
+##  Median :15.00   Mode  :character   Median : 5.000   Mode  :character  
+##  Mean   :15.21                      Mean   : 7.046                     
+##  3rd Qu.:25.00                      3rd Qu.: 5.000                     
+##  Max.   :32.00                      Max.   :25.000                     
+##  Saldo_cartera_fecha_corte    Vigente          Vencida_1_2_Meses  
+##  Min.   :0.000e+00         Min.   :0.000e+00   Min.   :0.000e+00  
+##  1st Qu.:4.018e+09         1st Qu.:3.662e+09   1st Qu.:0.000e+00  
+##  Median :5.933e+10         Median :5.550e+10   Median :0.000e+00  
+##  Mean   :7.639e+11         Mean   :7.284e+11   Mean   :4.252e+09  
+##  3rd Qu.:5.251e+11         3rd Qu.:4.917e+11   3rd Qu.:1.956e+08  
+##  Max.   :3.719e+13         Max.   :3.668e+13   Max.   :1.223e+12  
+##  Vencida_2_3_Meses   Vencida_1_3_Meses   Vencida_3_4_Meses  
+##  Min.   :0.000e+00   Min.   :0.000e+00   Min.   :0.000e+00  
+##  1st Qu.:0.000e+00   1st Qu.:0.000e+00   1st Qu.:0.000e+00  
+##  Median :0.000e+00   Median :0.000e+00   Median :0.000e+00  
+##  Mean   :2.532e+09   Mean   :3.243e+09   Mean   :1.065e+08  
+##  3rd Qu.:9.110e+07   3rd Qu.:0.000e+00   3rd Qu.:0.000e+00  
+##  Max.   :9.131e+11   Max.   :6.344e+11   Max.   :9.723e+10  
+##  Vencida_mas_4_Meses Vencida_3_6_Meses   Vencida_mas_6_meses
+##  Min.   :0.000e+00   Min.   :0.000e+00   Min.   :0.000e+00  
+##  1st Qu.:0.000e+00   1st Qu.:0.000e+00   1st Qu.:0.000e+00  
+##  Median :0.000e+00   Median :7.534e+03   Median :0.000e+00  
+##  Mean   :6.854e+08   Mean   :6.708e+09   Mean   :2.895e+09  
+##  3rd Qu.:0.000e+00   3rd Qu.:1.610e+09   3rd Qu.:1.153e+07  
+##  Max.   :4.323e+11   Max.   :1.552e+12   Max.   :4.622e+11  
+##  Vencida_1_4_meses   Vencida_4_6_meses    Vencida_6_12_meses 
+##  Min.   :0.000e+00   Min.   :-6.891e+07   Min.   :0.000e+00  
+##  1st Qu.:0.000e+00   1st Qu.: 0.000e+00   1st Qu.:0.000e+00  
+##  Median :0.000e+00   Median : 0.000e+00   Median :0.000e+00  
+##  Mean   :3.260e+09   Mean   : 5.632e+08   Mean   :3.633e+09  
+##  3rd Qu.:0.000e+00   3rd Qu.: 0.000e+00   3rd Qu.:2.254e+08  
+##  Max.   :7.775e+11   Max.   : 1.780e+11   Max.   :5.268e+11  
+##  Vencida_12_18_meses Vencida_mas_12_meses Vencida_mas_18_meses
+##  Min.   :0.000e+00   Min.   :0.000e+00    Min.   :0.000e+00   
+##  1st Qu.:0.000e+00   1st Qu.:0.000e+00    1st Qu.:0.000e+00   
+##  Median :0.000e+00   Median :0.000e+00    Median :0.000e+00   
+##  Mean   :3.877e+08   Mean   :6.187e+09    Mean   :9.637e+08   
+##  3rd Qu.:0.000e+00   3rd Qu.:0.000e+00    3rd Qu.:0.000e+00   
+##  Max.   :8.419e+10   Max.   :8.902e+11    Max.   :2.331e+11   
+##  Num_clientes_mora_30_dias Calificacion_Riesgo_A_Num_clientes
+##  Min.   :     0            Min.   :      0                   
+##  1st Qu.:     1            1st Qu.:     20                   
+##  Median :    27            Median :    434                   
+##  Mean   :  2689            Mean   :  35599                   
+##  3rd Qu.:   514            3rd Qu.:   6385                   
+##  Max.   :191385            Max.   :1509442                   
+##  Calificacion_Riesgo_A_Saldo Calificacion_Riesgo_B_Num_clientes
+##  Min.   :0.000e+00           Min.   :     0                    
+##  1st Qu.:3.291e+09           1st Qu.:     0                    
+##  Median :5.248e+10           Median :    15                    
+##  Mean   :6.952e+11           Mean   :  1313                    
+##  3rd Qu.:4.656e+11           3rd Qu.:   223                    
+##  Max.   :3.555e+13           Max.   :154695                    
+##  Calificacion_Riesgo_B_Saldo Calificacion_Riesgo_C_Num_clientes
+##  Min.   :0.000e+00           Min.   :     0                    
+##  1st Qu.:0.000e+00           1st Qu.:     0                    
+##  Median :8.442e+08           Median :     7                    
+##  Mean   :2.205e+10           Mean   :  1130                    
+##  3rd Qu.:1.133e+10           3rd Qu.:   125                    
+##  Max.   :1.731e+12           Max.   :947270                    
+##  Calificacion_Riesgo_C_Saldo Calificacion_Riesgo_D_Num_clientes
+##  Min.   :0.000e+00           Min.   :     0                    
+##  1st Qu.:0.000e+00           1st Qu.:     0                    
+##  Median :3.677e+08           Median :     9                    
+##  Mean   :1.431e+10           Mean   :  1060                    
+##  3rd Qu.:6.193e+09           3rd Qu.:   154                    
+##  Max.   :1.710e+12           Max.   :139192                    
+##  Calificacion_Riesgo_D_Saldo Calificacion_Riesgo_E_Num_clientes
+##  Min.   :0.000e+00           Min.   :     0                    
+##  1st Qu.:0.000e+00           1st Qu.:     0                    
+##  Median :4.271e+08           Median :     5                    
+##  Mean   :1.688e+10           Mean   :  1022                    
+##  3rd Qu.:6.621e+09           3rd Qu.:   142                    
+##  Max.   :2.350e+12           Max.   :124703                    
+##  Calificacion_Riesgo_E_Saldo
+##  Min.   :0.000e+00          
+##  1st Qu.:0.000e+00          
+##  Median :1.999e+08          
+##  Mean   :1.475e+10          
+##  3rd Qu.:5.705e+09          
+##  Max.   :2.093e+12</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="analisis-exploratorio-de-datos.html#cb10-1" tabindex="-1"></a><span class="fu">dim</span>(df)</span></code></pre></div>
+<pre><code>## [1] 92568    34</code></pre>
+<ul>
+<li>Grafica de la distribución de la variable categórica TIPO_ENTIDAD.</li>
+</ul>
+<p>La mayoría de las entidades son del tipo 1, seguido de las entidades tipo 4.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="analisis-exploratorio-de-datos.html#cb12-1" tabindex="-1"></a><span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(TIPO_ENTIDAD))) <span class="sc">+</span></span>
+<span id="cb12-2"><a href="analisis-exploratorio-de-datos.html#cb12-2" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">fill =</span> <span class="st">&quot;skyblue&quot;</span>, <span class="at">color =</span> <span class="st">&quot;black&quot;</span>) <span class="sc">+</span></span>
+<span id="cb12-3"><a href="analisis-exploratorio-de-datos.html#cb12-3" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Tipo de Entidad&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Frecuencia&quot;</span>, <span class="at">title =</span> <span class="st">&quot;Distribución de Tipo de Entidad&quot;</span>)</span></code></pre></div>
+<p><img src="Series_de_tiempo_files/figure-html/1c-1.png" width="672" />
+Realizamos primero una Revisión de datos faltantes, para verificar que nuestra base de datos este completa.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="analisis-exploratorio-de-datos.html#cb13-1" tabindex="-1"></a><span class="co"># Utiliza la función colSums() junto con is.na() para calcular el número de NA por columna</span></span>
+<span id="cb13-2"><a href="analisis-exploratorio-de-datos.html#cb13-2" tabindex="-1"></a>num_missing <span class="ot">&lt;-</span> <span class="fu">colSums</span>(<span class="fu">is.na</span>(df))</span>
+<span id="cb13-3"><a href="analisis-exploratorio-de-datos.html#cb13-3" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="analisis-exploratorio-de-datos.html#cb13-4" tabindex="-1"></a><span class="co"># Muestra el número de datos faltantes por variable</span></span>
+<span id="cb13-5"><a href="analisis-exploratorio-de-datos.html#cb13-5" tabindex="-1"></a><span class="fu">print</span>(num_missing)</span></code></pre></div>
+<pre><code>##                       TIPO_ENTIDAD                     CODIGO_ENTIDAD 
+##                                  0                                  0 
+##                      NOMBREENTIDAD                        FECHA_CORTE 
+##                                  0                                  0 
+##                             UNICAP                         DESCRIP_UC 
+##                                  0                                  0 
+##                            RENGLON                       DESC_RENGLON 
+##                                  0                                  0 
+##          Saldo_cartera_fecha_corte                            Vigente 
+##                                  0                                  0 
+##                  Vencida_1_2_Meses                  Vencida_2_3_Meses 
+##                                  0                                  0 
+##                  Vencida_1_3_Meses                  Vencida_3_4_Meses 
+##                                  0                                  0 
+##                Vencida_mas_4_Meses                  Vencida_3_6_Meses 
+##                                  0                                  0 
+##                Vencida_mas_6_meses                  Vencida_1_4_meses 
+##                                  0                                  0 
+##                  Vencida_4_6_meses                 Vencida_6_12_meses 
+##                                  0                                  0 
+##                Vencida_12_18_meses               Vencida_mas_12_meses 
+##                                  0                                  0 
+##               Vencida_mas_18_meses          Num_clientes_mora_30_dias 
+##                                  0                                  0 
+## Calificacion_Riesgo_A_Num_clientes        Calificacion_Riesgo_A_Saldo 
+##                                  0                                  0 
+## Calificacion_Riesgo_B_Num_clientes        Calificacion_Riesgo_B_Saldo 
+##                                  0                                  0 
+## Calificacion_Riesgo_C_Num_clientes        Calificacion_Riesgo_C_Saldo 
+##                                  0                                  0 
+## Calificacion_Riesgo_D_Num_clientes        Calificacion_Riesgo_D_Saldo 
+##                                  0                                  0 
+## Calificacion_Riesgo_E_Num_clientes        Calificacion_Riesgo_E_Saldo 
+##                                  0                                  0</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="analisis-exploratorio-de-datos.html#cb15-1" tabindex="-1"></a><span class="co">#Correlación entre variables numéricas</span></span>
+<span id="cb15-2"><a href="analisis-exploratorio-de-datos.html#cb15-2" tabindex="-1"></a>correlation_matrix <span class="ot">&lt;-</span> <span class="fu">cor</span>(df[, <span class="fu">c</span>(<span class="st">&quot;TIPO_ENTIDAD&quot;</span>, <span class="st">&quot;Saldo_cartera_fecha_corte&quot;</span>)])</span>
+<span id="cb15-3"><a href="analisis-exploratorio-de-datos.html#cb15-3" tabindex="-1"></a><span class="fu">print</span>(correlation_matrix)</span></code></pre></div>
+<pre><code>##                           TIPO_ENTIDAD Saldo_cartera_fecha_corte
+## TIPO_ENTIDAD                 1.0000000                -0.1446022
+## Saldo_cartera_fecha_corte   -0.1446022                 1.0000000</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="analisis-exploratorio-de-datos.html#cb17-1" tabindex="-1"></a><span class="co"># Visualiza la matriz de correlación</span></span>
+<span id="cb17-2"><a href="analisis-exploratorio-de-datos.html#cb17-2" tabindex="-1"></a><span class="fu">corrplot</span>(correlation_matrix, <span class="at">method =</span> <span class="st">&quot;color&quot;</span>, <span class="at">col =</span> <span class="fu">colorRampPalette</span>(<span class="fu">c</span>(<span class="st">&quot;blue&quot;</span>, <span class="st">&quot;white&quot;</span>, <span class="st">&quot;green&quot;</span>))(<span class="dv">50</span>))</span></code></pre></div>
+<p><img src="Series_de_tiempo_files/figure-html/1e-1.png" width="672" /></p>
+<p>Ahora ya convertiremos fecha de corte a una variable tipo fecha.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="analisis-exploratorio-de-datos.html#cb18-1" tabindex="-1"></a>df<span class="sc">$</span>FECHA_CORTE <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(df<span class="sc">$</span>FECHA_CORTE, <span class="at">format =</span> <span class="st">&quot;%d/%m/%Y&quot;</span>)</span></code></pre></div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="instalación-de-paquetes-y-carga-de-datos.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="variables-de-tiempo.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": false,
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>
