@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>8 Diferenciación | Distribución de cartera por producto</title>
+  <title>10 Suavizamiento Exponencial Simple | Distribución de cartera por producto</title>
   <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="8 Diferenciación | Distribución de cartera por producto" />
+  <meta property="og:title" content="10 Suavizamiento Exponencial Simple | Distribución de cartera por producto" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="8 Diferenciación | Distribución de cartera por producto" />
+  <meta name="twitter:title" content="10 Suavizamiento Exponencial Simple | Distribución de cartera por producto" />
   
   <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="estacionariedad.html"/>
-<link rel="next" href="modelo-holt-winters.html"/>
+<link rel="prev" href="modelo-holt-winters.html"/>
+<link rel="next" href="implementación-modelo-arima.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -169,29 +169,25 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="diferenciación" class="section level1 hasAnchor" number="8">
-<h1><span class="header-section-number">8</span> Diferenciación<a href="diferenciación.html#diferenciación" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>Teniendo en cuenta el resultado del test anterior,y con un nivel de significancia del 0.05, identificamos el número de veces que debemos diferenciar para tener la estacionariedad.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="diferenciación.html#cb33-1" tabindex="-1"></a>serie_diff1 <span class="ot">&lt;-</span> <span class="fu">diff</span>(datosVig, <span class="at">lag =</span> <span class="dv">11</span>)</span>
-<span id="cb33-2"><a href="diferenciación.html#cb33-2" tabindex="-1"></a><span class="fu">plot</span>(serie_diff1)</span></code></pre></div>
-<p><img src="Series_de_tiempo_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="diferenciación.html#cb34-1" tabindex="-1"></a><span class="co"># Test de Dickey-Fuller para la serie diferenciada</span></span>
-<span id="cb34-2"><a href="diferenciación.html#cb34-2" tabindex="-1"></a><span class="fu">adf.test</span>(serie_diff1)</span></code></pre></div>
-<pre><code>## 
-##  Augmented Dickey-Fuller Test
-## 
-## data:  serie_diff1
-## Dickey-Fuller = -3.9236, Lag order = 4, p-value = 0.01582
-## alternative hypothesis: stationary</code></pre>
-<p>Por medio de prueba y error, se identificó que el número de diferenciaciones necesarias para que la serie sea estacionaria es igual a 11, lo que indica que la serie original presenta una fuerte tendencia no estacionaria, permitiendo concluir que la serie original contenía información de diferentes escalas o patrones de crecimiento que no eran evidentes a simple vista.</p>
+<div id="suavizamiento-exponencial-simple" class="section level1 hasAnchor" number="10">
+<h1><span class="header-section-number">10</span> Suavizamiento Exponencial Simple<a href="suavizamiento-exponencial-simple.html#suavizamiento-exponencial-simple" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="suavizamiento-exponencial-simple.html#cb50-1" tabindex="-1"></a><span class="fu">library</span>(forecast)</span></code></pre></div>
+<p>Realizamos la aplicación del método de Suavizamiento Exponencial Simple, con un aplha=0.1, obteniendo el pronóstico para el mes siguiente (Marzo 2024) y sus respectivos intervalos Low y High.</p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="suavizamiento-exponencial-simple.html#cb51-1" tabindex="-1"></a>fit_ses1 <span class="ot">=</span> <span class="fu">ses</span>(<span class="fu">log</span>(data_agrupada2), <span class="at">h=</span><span class="dv">1</span>, <span class="at">initial=</span><span class="st">&quot;simple&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.1</span>)</span>
+<span id="cb51-2"><a href="suavizamiento-exponencial-simple.html#cb51-2" tabindex="-1"></a>fit_ses1</span></code></pre></div>
+<pre><code>##          Point Forecast    Lo 80    Hi 80    Lo 95    Hi 95
+## Mar 2024       34.32505 34.23973 34.41036 34.19457 34.45552</code></pre>
+<p>Gráfica de predicción con SES:</p>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="suavizamiento-exponencial-simple.html#cb53-1" tabindex="-1"></a><span class="fu">plot</span>(fit_ses1, <span class="at">main=</span><span class="st">&quot;Predicción con Suavizamiento Exponencial Simple - SES&quot;</span>, <span class="at">xlab=</span><span class="st">&quot;Año&quot;</span>)</span></code></pre></div>
+<p><img src="Series_de_tiempo_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="estacionariedad.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="modelo-holt-winters.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="modelo-holt-winters.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="implementación-modelo-arima.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

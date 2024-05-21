@@ -78,6 +78,7 @@ options(repos = 'https://cran.r-project.org')
 #install.packages("fpp2")
 #install.packages("corrplot")
 
+
 library(stringr)
 library(readr)
 library(dplyr)
@@ -88,7 +89,7 @@ library(tseries)
 library(tidyverse)
 library(corrplot)
 library(fpp2)
-#library(ggplot)
+
 ```
 
 
@@ -270,3 +271,149 @@ adf.test(serie_diff1)
 ```
 
 Por medio de prueba y error, se identificó que el número de diferenciaciones necesarias para que la serie sea estacionaria es igual a 11, lo que indica que la serie original presenta una fuerte tendencia no estacionaria, permitiendo concluir que la serie original contenía información de diferentes escalas o patrones de crecimiento que no eran evidentes a simple vista.
+
+# Modelo Holt-Winters
+
+Este modelo permite estimar los parámetros B0, Bt y la caminata aleatoria que debe seguir el modelo para ser recursiva la estimación en el tiempo.
+
+```{r}
+install.packages("TSA")
+library(TSA)
+```
+
+```{r}
+data_agrupada2 = ts(data_agrupada$Vigente, frequency = 12, start=c(2015,1))
+modelo_HW = HoltWinters(log(data_agrupada2), seasonal = "additive")
+plot(modelo_HW, main='Ajuste con Holt-Winters', xlab='Año', ylab='log(S_Vigente)')
+```
+
+El comando de Holt-Winters crea una gráfica en color rojo, con un comportamiento muy cercano a la serie original (línea negra), teniendo algunos valores alejados como en 2016-1 o el inicio de 2020, pero que apesar de esto el ajuste con el método es bueno para la serie de tiempo.
+
+Para complementar el análisis del método realizamos el proceso de descomposición para la serie con el modelo aplicado:
+```{r}
+plot(fitted(modelo_HW), main='Descomposición del modelo Holt-Winters', xlab='Año', ylab='log(Vigente)')
+```
+
+Luego de revisar la descomposición, podemos realizar una predicción con este modelo para los siguientes meses:
+```{r}
+prediccion = predict(modelo_HW, 12, prediction.interval = TRUE)
+prediccion
+```
+
+Podemos ver la predicción de un año en el cual los valores se rigen o siguen una tendencia de valores de los meses inmediatamente anteriores. Podemos graficar esta predicción así:
+```{r}
+plot(modelo_HW, prediccion, main='Holt-Winters + Predicción', xlab='Año')
+```
+
+# Suavizamiento Exponencial Simple
+
+```{r}
+library(forecast)
+```
+
+Realizamos la aplicación del método de Suavizamiento Exponencial Simple, con un aplha=0.1, obteniendo el pronóstico para el mes siguiente (Marzo 2024) y sus respectivos intervalos Low y High.
+```{r}
+fit_ses1 = ses(log(data_agrupada2), h=1, initial="simple", alpha = 0.1)
+fit_ses1
+```
+
+Gráfica de predicción con SES:
+```{r}
+plot(fit_ses1, main="Predicción con Suavizamiento Exponencial Simple - SES", xlab="Año")
+```
+
+
+# Implementación modelo ARIMA
+
+```{r}
+#install.packages("forecast")
+#install.packages("tseries")
+#install.packages("ggplot2")
+#install.packages("zoo")
+
+library(forecast)
+library(tseries)
+library(ggplot2)
+library(zoo)
+
+```
+
+
+
+```{r}
+# Descomposición de la serie temporal
+decomposed <- decompose(datosVig)
+plot(decomposed)
+
+```
+
+```{r}
+# Prueba de Dickey-Fuller aumentada
+adf_test <- adf.test(datosVig, alternative = "stationary")
+
+# Resultados de la prueba ADF
+adf_test$p.value
+
+```
+El p-valor de la prueba ADF es 0.3538667, lo que indica que la serie no es estacionaria, ya que el p-valor es mayor que 0.05.
+
+Después de aplicar la diferenciación, se realiza otra prueba ADF:
+```{r}
+# Si la serie no es estacionaria, aplicar diferenciación
+if (adf_test$p.value > 0.05) {
+  df_diff <- diff(datosVig)
+  adf_test_diff <- adf.test(df_diff, alternative = "stationary")
+  
+  # Resultados de la prueba ADF después de la diferenciación
+  adf_test_diff$p.value
+}
+
+
+```
+El p-valor sigue siendo mayor que 0.05, quiere decir que la serie aún no es estacionaria. Esto podría indicar que la serie necesita más diferenciación o alguna otra transformación.
+
+
+La transformación logarítmica se aplica para estabilizar la varianza y se realizó otra diferenciación sobre la serie logarítmica.
+```{r}
+# Aplicar transformación logarítmica para estabilizar la varianza
+df_log <- log(datosVig)
+df_log_diff <- diff(df_log)
+
+# Visualización de la serie transformada
+plot(df_log, main = "Serie Logarítmica")
+
+
+```
+
+ 
+
+```{r}
+# Ajuste del modelo ARIMA
+fit <- auto.arima(df_log_diff)
+
+# Resumen del modelo
+summary(fit)
+
+
+```
+El modelo ajustado es un ARIMA(3,0,0)(2,0,0)[12] con media no nula.Los valores del AIC y BIC indican un buen ajuste del modelo.
+
+```{r}
+# Diagnóstico residual
+checkresiduals(fit)
+
+# Verificar ACF y PACF de los residuales
+acf(fit$residuals)
+pacf(fit$residuals)
+
+
+```
+
+El p-valor del test de Ljung-Box es 0.102, lo que indica que no hay autocorrelación significativa en los residuos del modelo (p-valor > 0.05), por lo  que los residuos son ruido blanco. Los gráficos ACF y PACF de los residuos del modelo ayudan a confirmar que no hay autocorrelación significativa en los residuos. 
+
+
+
+
+
+
+

@@ -4,18 +4,18 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>8 Diferenciación | Distribución de cartera por producto</title>
+  <title>9 Modelo Holt-Winters | Distribución de cartera por producto</title>
   <meta name="description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   <meta name="generator" content="bookdown 0.39 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="8 Diferenciación | Distribución de cartera por producto" />
+  <meta property="og:title" content="9 Modelo Holt-Winters | Distribución de cartera por producto" />
   <meta property="og:type" content="book" />
   
   <meta property="og:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   <meta name="github-repo" content="rstudio/bookdown-demo" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="8 Diferenciación | Distribución de cartera por producto" />
+  <meta name="twitter:title" content="9 Modelo Holt-Winters | Distribución de cartera por producto" />
   
   <meta name="twitter:description" content="This is a minimal example of using the bookdown package to write a book. The output format for this example is bookdown::gitbook." />
   
@@ -30,8 +30,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
   
-<link rel="prev" href="estacionariedad.html"/>
-<link rel="next" href="modelo-holt-winters.html"/>
+<link rel="prev" href="diferenciación.html"/>
+<link rel="next" href="suavizamiento-exponencial-simple.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -169,29 +169,67 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="diferenciación" class="section level1 hasAnchor" number="8">
-<h1><span class="header-section-number">8</span> Diferenciación<a href="diferenciación.html#diferenciación" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>Teniendo en cuenta el resultado del test anterior,y con un nivel de significancia del 0.05, identificamos el número de veces que debemos diferenciar para tener la estacionariedad.</p>
-<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="diferenciación.html#cb33-1" tabindex="-1"></a>serie_diff1 <span class="ot">&lt;-</span> <span class="fu">diff</span>(datosVig, <span class="at">lag =</span> <span class="dv">11</span>)</span>
-<span id="cb33-2"><a href="diferenciación.html#cb33-2" tabindex="-1"></a><span class="fu">plot</span>(serie_diff1)</span></code></pre></div>
-<p><img src="Series_de_tiempo_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="diferenciación.html#cb34-1" tabindex="-1"></a><span class="co"># Test de Dickey-Fuller para la serie diferenciada</span></span>
-<span id="cb34-2"><a href="diferenciación.html#cb34-2" tabindex="-1"></a><span class="fu">adf.test</span>(serie_diff1)</span></code></pre></div>
-<pre><code>## 
-##  Augmented Dickey-Fuller Test
+<div id="modelo-holt-winters" class="section level1 hasAnchor" number="9">
+<h1><span class="header-section-number">9</span> Modelo Holt-Winters<a href="modelo-holt-winters.html#modelo-holt-winters" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<p>Este modelo permite estimar los parámetros B0, Bt y la caminata aleatoria que debe seguir el modelo para ser recursiva la estimación en el tiempo.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="modelo-holt-winters.html#cb36-1" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&quot;TSA&quot;</span>)</span></code></pre></div>
+<pre><code>## Installing package into &#39;D:/Usuarios/dir.tic/AppData/Local/R/win-library/4.4&#39;
+## (as &#39;lib&#39; is unspecified)</code></pre>
+<pre><code>## package &#39;TSA&#39; successfully unpacked and MD5 sums checked
 ## 
-## data:  serie_diff1
-## Dickey-Fuller = -3.9236, Lag order = 4, p-value = 0.01582
-## alternative hypothesis: stationary</code></pre>
-<p>Por medio de prueba y error, se identificó que el número de diferenciaciones necesarias para que la serie sea estacionaria es igual a 11, lo que indica que la serie original presenta una fuerte tendencia no estacionaria, permitiendo concluir que la serie original contenía información de diferentes escalas o patrones de crecimiento que no eran evidentes a simple vista.</p>
+## The downloaded binary packages are in
+##  D:\Usuarios\dir.tic\AppData\Local\Temp\Rtmp2bzlob\downloaded_packages</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="modelo-holt-winters.html#cb39-1" tabindex="-1"></a><span class="fu">library</span>(TSA)</span></code></pre></div>
+<pre><code>## Registered S3 methods overwritten by &#39;TSA&#39;:
+##   method       from    
+##   fitted.Arima forecast
+##   plot.Arima   forecast</code></pre>
+<pre><code>## 
+## Adjuntando el paquete: &#39;TSA&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:readr&#39;:
+## 
+##     spec</code></pre>
+<pre><code>## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     acf, arima</code></pre>
+<pre><code>## The following object is masked from &#39;package:utils&#39;:
+## 
+##     tar</code></pre>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="modelo-holt-winters.html#cb45-1" tabindex="-1"></a>data_agrupada2 <span class="ot">=</span> <span class="fu">ts</span>(data_agrupada<span class="sc">$</span>Vigente, <span class="at">frequency =</span> <span class="dv">12</span>, <span class="at">start=</span><span class="fu">c</span>(<span class="dv">2015</span>,<span class="dv">1</span>))</span>
+<span id="cb45-2"><a href="modelo-holt-winters.html#cb45-2" tabindex="-1"></a>modelo_HW <span class="ot">=</span> <span class="fu">HoltWinters</span>(<span class="fu">log</span>(data_agrupada2), <span class="at">seasonal =</span> <span class="st">&quot;additive&quot;</span>)</span>
+<span id="cb45-3"><a href="modelo-holt-winters.html#cb45-3" tabindex="-1"></a><span class="fu">plot</span>(modelo_HW, <span class="at">main=</span><span class="st">&#39;Ajuste con Holt-Winters&#39;</span>, <span class="at">xlab=</span><span class="st">&#39;Año&#39;</span>, <span class="at">ylab=</span><span class="st">&#39;log(S_Vigente)&#39;</span>)</span></code></pre></div>
+<p><img src="Series_de_tiempo_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>El comando de Holt-Winters crea una gráfica en color rojo, con un comportamiento muy cercano a la serie original (línea negra), teniendo algunos valores alejados como en 2016-1 o el inicio de 2020, pero que apesar de esto el ajuste con el método es bueno para la serie de tiempo.</p>
+<p>Para complementar el análisis del método realizamos el proceso de descomposición para la serie con el modelo aplicado:</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="modelo-holt-winters.html#cb46-1" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">fitted</span>(modelo_HW), <span class="at">main=</span><span class="st">&#39;Descomposición del modelo Holt-Winters&#39;</span>, <span class="at">xlab=</span><span class="st">&#39;Año&#39;</span>, <span class="at">ylab=</span><span class="st">&#39;log(Vigente)&#39;</span>)</span></code></pre></div>
+<p><img src="Series_de_tiempo_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Luego de revisar la descomposición, podemos realizar una predicción con este modelo para los siguientes meses:</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="modelo-holt-winters.html#cb47-1" tabindex="-1"></a>prediccion <span class="ot">=</span> <span class="fu">predict</span>(modelo_HW, <span class="dv">12</span>, <span class="at">prediction.interval =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb47-2"><a href="modelo-holt-winters.html#cb47-2" tabindex="-1"></a>prediccion</span></code></pre></div>
+<pre><code>##               fit      upr      lwr
+## Mar 2024 34.34733 34.36608 34.32859
+## Apr 2024 34.34458 34.37318 34.31599
+## May 2024 34.34884 34.38698 34.31070
+## Jun 2024 34.35131 34.39915 34.30347
+## Jul 2024 34.35194 34.40979 34.29409
+## Aug 2024 34.35967 34.42790 34.29143
+## Sep 2024 34.36087 34.43988 34.28186
+## Oct 2024 34.35937 34.44955 34.26919
+## Nov 2024 34.36355 34.46530 34.26180
+## Dec 2024 34.36317 34.47689 34.24946
+## Jan 2025 34.35920 34.48527 34.23314
+## Feb 2025 34.36196 34.50075 34.22316</code></pre>
+<p>Podemos ver la predicción de un año en el cual los valores se rigen o siguen una tendencia de valores de los meses inmediatamente anteriores. Podemos graficar esta predicción así:</p>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="modelo-holt-winters.html#cb49-1" tabindex="-1"></a><span class="fu">plot</span>(modelo_HW, prediccion, <span class="at">main=</span><span class="st">&#39;Holt-Winters + Predicción&#39;</span>, <span class="at">xlab=</span><span class="st">&#39;Año&#39;</span>)</span></code></pre></div>
+<p><img src="Series_de_tiempo_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 </div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="estacionariedad.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="modelo-holt-winters.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="diferenciación.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="suavizamiento-exponencial-simple.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

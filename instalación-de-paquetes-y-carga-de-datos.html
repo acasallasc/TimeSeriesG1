@@ -23,7 +23,7 @@
 <meta name="author" content="Angie Cantillo, Carlos Casallas Ciprian, Ginna Quintero Afanador" />
 
 
-<meta name="date" content="2024-05-06" />
+<meta name="date" content="2024-05-20" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -149,6 +149,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="7" data-path="estacionariedad.html"><a href="estacionariedad.html"><i class="fa fa-check"></i><b>7</b> Estacionariedad</a></li>
 <li class="chapter" data-level="8" data-path="diferenciación.html"><a href="diferenciación.html"><i class="fa fa-check"></i><b>8</b> Diferenciación</a></li>
+<li class="chapter" data-level="9" data-path="modelo-holt-winters.html"><a href="modelo-holt-winters.html"><i class="fa fa-check"></i><b>9</b> Modelo Holt-Winters</a></li>
+<li class="chapter" data-level="10" data-path="suavizamiento-exponencial-simple.html"><a href="suavizamiento-exponencial-simple.html"><i class="fa fa-check"></i><b>10</b> Suavizamiento Exponencial Simple</a></li>
+<li class="chapter" data-level="11" data-path="implementación-modelo-arima.html"><a href="implementación-modelo-arima.html"><i class="fa fa-check"></i><b>11</b> Implementación modelo ARIMA</a></li>
 </ul>
 
       </nav>
@@ -182,17 +185,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb1-9"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-9" tabindex="-1"></a><span class="co">#install.packages(&quot;fpp2&quot;)</span></span>
 <span id="cb1-10"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-10" tabindex="-1"></a><span class="co">#install.packages(&quot;corrplot&quot;)</span></span>
 <span id="cb1-11"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-11" tabindex="-1"></a></span>
-<span id="cb1-12"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-12" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
-<span id="cb1-13"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-13" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
-<span id="cb1-14"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-14" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-15"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-15" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb1-16"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-16" tabindex="-1"></a><span class="fu">library</span>(stats)</span>
-<span id="cb1-17"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-17" tabindex="-1"></a><span class="fu">library</span>(zoo)</span>
-<span id="cb1-18"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-18" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
-<span id="cb1-19"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-19" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-20"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-20" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
-<span id="cb1-21"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-21" tabindex="-1"></a><span class="fu">library</span>(fpp2)</span>
-<span id="cb1-22"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-22" tabindex="-1"></a><span class="co">#library(ggplot)</span></span></code></pre></div>
+<span id="cb1-12"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-12" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-13" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb1-14"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-14" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb1-15"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-15" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-16"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-16" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-17"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-17" tabindex="-1"></a><span class="fu">library</span>(stats)</span>
+<span id="cb1-18"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-18" tabindex="-1"></a><span class="fu">library</span>(zoo)</span>
+<span id="cb1-19"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-19" tabindex="-1"></a><span class="fu">library</span>(tseries)</span>
+<span id="cb1-20"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-20" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-21"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-21" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb1-22"><a href="instalación-de-paquetes-y-carga-de-datos.html#cb1-22" tabindex="-1"></a><span class="fu">library</span>(fpp2)</span></code></pre></div>
 <ul>
 <li>Cargar los datos, para ello descargamos los datos en formato .csv</li>
 </ul>
