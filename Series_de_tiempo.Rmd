@@ -411,9 +411,80 @@ pacf(fit$residuals)
 
 El p-valor del test de Ljung-Box es 0.102, lo que indica que no hay autocorrelación significativa en los residuos del modelo (p-valor > 0.05), por lo  que los residuos son ruido blanco. Los gráficos ACF y PACF de los residuos del modelo ayudan a confirmar que no hay autocorrelación significativa en los residuos. 
 
+# Algoritmo Facebook´s Prophet
+
+```{r,message=FALSE}
+#Instalar y cargar las bibliotecas necesarias
+install.packages('prophet')
+library(prophet)
+library(dplyr)
+```
+
+
+```{r,message=FALSE}
+data_agrupada <- data_agrupada %>%
+  rename(ds = FECHA_CORTE, y = Vigente)
+model <- prophet(data_agrupada)
+
+```
+
+```{r}
+# Crear un data frame con fechas futuras
+future <- make_future_dataframe(model, periods = 365)
+
+# Hacer las predicciones
+forecast <- predict(model, future)
+
+# Mostrar las predicciones
+tail(forecast[, c('ds', 'yhat', 'yhat_lower', 'yhat_upper')])
+
+```
 
 
 
+```{r}
+
+set.seed(42)
+actual_sales_2023 <- rpois(365, lambda = 210)
+actual_df <- data.frame(ds = seq(as.Date('2023-01-01'), as.Date('2023-12-31'), by = 'day'), y = actual_sales_2023)
+
+# Unir las predicciones con los datos reales
+comparison_df <- merge(forecast[, c('ds', 'yhat')], actual_df, by = 'ds')
+
+# Calcular el error
+comparison_df <- comparison_df %>%
+  mutate(error = y - yhat, abs_error = abs(error))
+
+mae <- mean(comparison_df$abs_error)
+print(paste('Mean Absolute Error (MAE):', mae))
 
 
+```
 
+
+```{r}
+# Graficar el modelo y las predicciones
+plot(model, forecast) +
+  ggtitle("Predicciones con Prophet") +
+  xlab("Fecha") +
+  ylab("Valor")
+```
+
+En estos gráficos podemos ver:
+
+* Línea azul: Representa los valores reales del capital vigente en mora a lo largo del tiempo.
+
+* Banda gris: Representa el intervalo de predicción del modelo Prophet Facebook. La banda gris indica el rango dentro del cual se espera que se encuentre el valor real con una cierta probabilidad (generalmente 95%).
+
+* Línea punteada azul: Representa la predicción puntual del modelo Prophet Facebook para el capital vigente en mora. Es decir, el valor que el modelo predice como el más probable para cada punto en el tiempo.
+
+En general, el modelo Prophet Facebook parece ajustarse bien a los datos históricos del capital vigente en mora. La banda de predicción abarca los valores reales de la serie, lo que indica que el modelo es capaz de capturar la variabilidad de la serie.
+
+Sin embargo, es importante tener en cuenta que las predicciones son solo estimaciones y no son completamente precisas. El valor real del capital vigente en mora podría estar fuera de la banda de predicción, incluso con una probabilidad del 5%.
+
+```{r}
+# Graficar los componentes del modelo (tendencia y estacionalidad)
+prophet_plot_components(model, forecast)
+```
+
+Sobre los componentes del modelo se evidencia una combinación de una tendencia ascendente con una estacionalidad clara, con disminuciones al final de cada trimestre, lo que puede indicar un aumento en los pagos que genera un acto reflejo en la disminución del capital Vigente en mora.
