@@ -488,3 +488,94 @@ prophet_plot_components(model, forecast)
 ```
 
 Sobre los componentes del modelo se evidencia una combinación de una tendencia ascendente con una estacionalidad clara, con disminuciones al final de cada trimestre, lo que puede indicar un aumento en los pagos que genera un acto reflejo en la disminución del capital Vigente en mora.
+
+
+# Modelos ELMAN y JORDAN
+
+Para continuar con el análisis de la serie de tiempo elegida, se va realiza una predicción de los modelos ELMAN y JORDAN que se basan en redes neuronales. 
+```{r}
+#Instalación de paquetes para el análisis
+install.packages("RSNNS")
+require(RSNNS)
+require(quantmod)
+```
+Para iniciar, se debe realizar la normalización de los datos con los que se está trabajando.
+```{r}
+serie_normalizada <- (datosVig - min(datosVig)) / (max(datosVig)-min(datosVig))
+```
+
+Por otra parte se definen las dimensiones de los sets de entrenamiento y test.
+```{r}
+train <- 1:82
+test <- 83:110
+```
+
+También, definimos como variables de entrenamiento en serie, los sets para el análisis avanzando un valor de la serie en el futuro, a través de una variable de tipo zoo:
+```{r}
+y<-as.zoo(serie_normalizada)
+x1<-Lag(y,k=1)
+x2<-Lag(y,k=2)
+x3<-Lag(y,k=3)
+x4<-Lag(y,k=4)
+x5<-Lag(y,k=5)
+x6<-Lag(y,k=6)
+x7<-Lag(y,k=7)
+x8<-Lag(y,k=8)
+x9<-Lag(y,k=9)
+x10<-Lag(y,k=10)
+slog<-cbind(y,x1,x2,x3,x4,x5,x6,x7,x8,x9,x10)
+
+slog<-slog[-(1:10),]
+
+inputs<-slog[,2:11]
+outputs<-slog[,1]
+```
+
+## Modelo ELMAN
+Las redes Elman son particularmente útiles para modelar datos secuenciales, ya que pueden incorporar información del contexto previo para realizar mejores predicciones.
+```{r}
+elman_model<-elman(inputs[train],
+    outputs[train],
+    size=c(3,2),
+    learnFuncParams=c(0.1),
+    maxit=100000)
+plotIterativeError(elman_model)
+```
+
+
+## Modelo JORDAN
+Las redes Jordan son capaces de capturar dependencias a largo plazo en los datos de series de tiempo, lo que las hace más efectivas para tareas de pronóstico que las redes RNN tradicionales.
+```{r}
+jordan_model<-jordan(inputs[train],
+ outputs[train],
+ size=4,
+ learnFuncParams=c(0.01),
+ maxit=100000)
+
+```
+
+## Evaluación de los modelos
+La gráfica muestra una comparación entre los valores reales y los valores predichos por los modelos Elman y Jordan para una serie de tiempo. El eje X representa el tiempo, mientras que el eje Y representa los valores de la serie. Los puntos azules representan los valores reales, la línea verde representa las predicciones del modelo Jordan y la línea roja representa las predicciones del modelo Elman.
+
+En general, ambos modelos parecen predecir los valores de la serie de tiempo con bastante precisión. Sin embargo, el modelo Elman parece tener un mejor rendimiento general, ya que su línea se ajusta más estrechamente a los puntos azules que representan los valores reales. Sin embargo, el modelo Jordan parece tener un mejor rendimiento general, especialmente en términos de precisión a largo plazo y captura de patrones y tendencias.
+```{r}
+y<-as.vector(outputs[-train])
+elman_pred<-as.vector(predict(elman_model,inputs[-train]))
+jordan_pred<-as.vector(predict(jordan_model,inputs[-train]))
+df_plot2 <- data.frame(x = y, y = jordan_pred, z = elman_pred)
+
+ggplot(data = df_plot2) +
+  geom_line(aes(x=c(1:18), y = x, color="Valor Real"))+
+  geom_line(aes(x=c(1:18), y = y, color="Jordan"))+ 
+  geom_line(aes(x=c(1:18), y = z, color="Elman"))
+```
+
+
+## Predicciones
+```{r}
+# Predicción para los próximos 8 meses
+future_predictions <- predict(elman_model, h = 8)
+serie_ajustada <- future_predictions*(max(datosVig)-min(datosVig))+min(datosVig)
+serie_ajustada2 <-ts(serie_ajustada, frequency = 12, start = c(2015,1))
+plot(serie_ajustada2, type="l", ylab="Vigente")
+```

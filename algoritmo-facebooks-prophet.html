@@ -23,7 +23,7 @@
 <meta name="author" content="Angie Cantillo, Carlos Casallas Ciprian, Ginna Quintero Afanador" />
 
 
-<meta name="date" content="2024-05-27" />
+<meta name="date" content="2024-06-19" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -31,7 +31,7 @@
   
   
 <link rel="prev" href="implementación-modelo-arima.html"/>
-
+<link rel="next" href="modelos-elman-y-jordan.html"/>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
@@ -153,6 +153,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="10" data-path="suavizamiento-exponencial-simple.html"><a href="suavizamiento-exponencial-simple.html"><i class="fa fa-check"></i><b>10</b> Suavizamiento Exponencial Simple</a></li>
 <li class="chapter" data-level="11" data-path="implementación-modelo-arima.html"><a href="implementación-modelo-arima.html"><i class="fa fa-check"></i><b>11</b> Implementación modelo ARIMA</a></li>
 <li class="chapter" data-level="12" data-path="algoritmo-facebooks-prophet.html"><a href="algoritmo-facebooks-prophet.html"><i class="fa fa-check"></i><b>12</b> Algoritmo Facebook´s Prophet</a></li>
+<li class="chapter" data-level="13" data-path="modelos-elman-y-jordan.html"><a href="modelos-elman-y-jordan.html"><i class="fa fa-check"></i><b>13</b> Modelos ELMAN y JORDAN</a>
+<ul>
+<li class="chapter" data-level="13.1" data-path="modelos-elman-y-jordan.html"><a href="modelos-elman-y-jordan.html#modelo-elman"><i class="fa fa-check"></i><b>13.1</b> Modelo ELMAN</a></li>
+<li class="chapter" data-level="13.2" data-path="modelos-elman-y-jordan.html"><a href="modelos-elman-y-jordan.html#modelo-jordan"><i class="fa fa-check"></i><b>13.2</b> Modelo JORDAN</a></li>
+<li class="chapter" data-level="13.3" data-path="modelos-elman-y-jordan.html"><a href="modelos-elman-y-jordan.html#evaluación-de-los-modelos"><i class="fa fa-check"></i><b>13.3</b> Evaluación de los modelos</a></li>
+<li class="chapter" data-level="13.4" data-path="modelos-elman-y-jordan.html"><a href="modelos-elman-y-jordan.html#predicciones"><i class="fa fa-check"></i><b>13.4</b> Predicciones</a></li>
+</ul></li>
 </ul>
 
       </nav>
@@ -177,7 +184,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <pre><code>## package &#39;prophet&#39; successfully unpacked and MD5 sums checked
 ## 
 ## The downloaded binary packages are in
-##  D:\Usuarios\dir.tic\AppData\Local\Temp\RtmpaML7Qg\downloaded_packages</code></pre>
+##  D:\Usuarios\dir.tic\AppData\Local\Temp\RtmpCmw38M\downloaded_packages</code></pre>
 <div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="algoritmo-facebooks-prophet.html#cb69-1" tabindex="-1"></a><span class="fu">library</span>(prophet)</span>
 <span id="cb69-2"><a href="algoritmo-facebooks-prophet.html#cb69-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
 <div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="algoritmo-facebooks-prophet.html#cb70-1" tabindex="-1"></a>data_agrupada <span class="ot">&lt;-</span> data_agrupada <span class="sc">%&gt;%</span></span>
@@ -192,12 +199,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb71-7"><a href="algoritmo-facebooks-prophet.html#cb71-7" tabindex="-1"></a><span class="co"># Mostrar las predicciones</span></span>
 <span id="cb71-8"><a href="algoritmo-facebooks-prophet.html#cb71-8" tabindex="-1"></a><span class="fu">tail</span>(forecast[, <span class="fu">c</span>(<span class="st">&#39;ds&#39;</span>, <span class="st">&#39;yhat&#39;</span>, <span class="st">&#39;yhat_lower&#39;</span>, <span class="st">&#39;yhat_upper&#39;</span>)])</span></code></pre></div>
 <pre><code>##             ds         yhat   yhat_lower   yhat_upper
-## 470 2025-02-23 9.727443e+14 9.560862e+14 9.891513e+14
-## 471 2025-02-24 9.649326e+14 9.466726e+14 9.805899e+14
-## 472 2025-02-25 9.561289e+14 9.381406e+14 9.735787e+14
-## 473 2025-02-26 9.464692e+14 9.302673e+14 9.627711e+14
-## 474 2025-02-27 9.361103e+14 9.192101e+14 9.513544e+14
-## 475 2025-02-28 9.252262e+14 9.078968e+14 9.420562e+14</code></pre>
+## 470 2025-02-23 9.727443e+14 9.556488e+14 9.891939e+14
+## 471 2025-02-24 9.649326e+14 9.471073e+14 9.818678e+14
+## 472 2025-02-25 9.561289e+14 9.399375e+14 9.727830e+14
+## 473 2025-02-26 9.464692e+14 9.298684e+14 9.628735e+14
+## 474 2025-02-27 9.361103e+14 9.198453e+14 9.521496e+14
+## 475 2025-02-28 9.252262e+14 9.086537e+14 9.422145e+14</code></pre>
 <div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="algoritmo-facebooks-prophet.html#cb73-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
 <span id="cb73-2"><a href="algoritmo-facebooks-prophet.html#cb73-2" tabindex="-1"></a>actual_sales_2023 <span class="ot">&lt;-</span> <span class="fu">rpois</span>(<span class="dv">365</span>, <span class="at">lambda =</span> <span class="dv">210</span>)</span>
 <span id="cb73-3"><a href="algoritmo-facebooks-prophet.html#cb73-3" tabindex="-1"></a>actual_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">ds =</span> <span class="fu">seq</span>(<span class="fu">as.Date</span>(<span class="st">&#39;2023-01-01&#39;</span>), <span class="fu">as.Date</span>(<span class="st">&#39;2023-12-31&#39;</span>), <span class="at">by =</span> <span class="st">&#39;day&#39;</span>), <span class="at">y =</span> actual_sales_2023)</span>
@@ -236,8 +243,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="implementación-modelo-arima.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="implementación-modelo-arima.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="modelos-elman-y-jordan.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
